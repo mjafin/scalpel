@@ -1,0 +1,92 @@
+
+Introduction
+============
+
+What is Scalpel?
+----------------
+
+Scalpel is a DNA micro-assembly pipeline for detecting 
+INDEL (INsertion and DEletion) mutations in Next-Generation Sequencing (NGS) data.
+
+What does it mean that Scalpel is in "beta"?
+--------------------------------------------
+
+Scalpel is currently under active development and it will be likely to see
+changes in the output and command line parameters in the near future.
+
+Obtaining Scalpel
+=================
+
+Scalpel can be downloaded from the Sourceforge site at the following address:
+
+http://sourceforge.net/projects/scalpel/
+
+The package has been tested under Linux and Mac OS X operating systems.
+
+Building from source
+--------------------
+
+Building and running Scalpel from source requires a GNU-like environment with 
+
+1. GCC
+2. GNU Make
+3. GNU CMake
+4. Perl 5.10 or later
+
+It should be possible to build Scalpel on most Linux installations 
+or on a Mac installation with [Xcode and Xcode command line tools] installed.
+
+Instructions to install Xcode (Mac only): 
+(1) install Xcode
+(2) open XCode -> Preferences -> Downloads -> Download XCode Command Line Tools [needed for 'make']
+
+First, download the source package from the sourceforge site. 
+Unzip the file, change to the unzipped directory, and build the
+scalpel by running GNU `make` (usually with the command `make`, but
+sometimes with `gmake`) with no arguments.  
+
+Adding to PATH
+--------------
+
+By adding your Scalpel directory to your PATH (environment variable), you
+ensure that whenever you run `scalpel` from the command line, you will get 
+the version you just installed without having to specify the entire path.  
+This is recommended for most users.  To do this, follow your operating system's 
+instructions for adding the directory to your PATH.
+
+Memory requirements
+-------------------
+
+For the human genome, a minimum of 3GB of RAM is required to run Scalpel. 
+However, a machine with 10GB of RAM is recommended.
+
+Documentation
+=============
+
+See included file MANUAL for details.
+
+Wrapper
+-------
+
+The `scalpel` executable is actually a Perl wrapper script that orchestrates 
+the pipeline analysis. It is recommended that you always run the `scalpel` directly.
+
+License
+=======
+
+Scalpel is released under the MIT License.
+Copyright (c) 2013-2014 Giuseppe Narzisi and Michael C. Schatz
+
+See included file LICENSE for details.
+
+Contact
+======
+
+If you have questions, comments, suggestions, bug reports, etc.
+please send them to:
+
+Giuseppe Narzisi 
+Cold Spring Harbor Laboratory
+Email: gnarzisi@cshl.edu
+Project Website: http://sourceforge.net/projects/scalpel/
+

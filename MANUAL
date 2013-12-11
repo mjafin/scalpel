@@ -1,0 +1,230 @@
+NAME
+
+	scalpel - micro-assembly variant detection tool
+
+CONTENTS
+
+	Synopsis
+	Description
+	Commands And Options
+	Output Format
+	See Also
+	Author
+	License
+	Citation
+
+SYNOPSIS
+
+	scalpel --single --bam file.bam --bed file.bed --ref ref.fa
+
+	scalpel --denovo --dad dad.bam --mom mom.bam --aff aff.bam --sib sib.bam --bed file.bed --ref ref.fa
+
+	scalpel --somatic --normal normal.bam --tumor tumor.bam --bed file.bed --ref ref.fa
+
+
+DESCRIPTION
+
+	Scalpel is a software package for detection of INDELs (INsertions and DELetions) mutations for 
+	next-generation sequencing data (e.g., Illumina). It supports three modes of operation: single, 
+	denovo, and somatic. In single mode scalpel detects INDELs in one single dataset (e.g., one individual exome). 
+	In denovo mode scalpel detects de novo INDELs in one family of four individuals (mom, dad, aff, sib). 
+	In somatic mode scalpel detects somatic INDELs in a tumor/sample pair given in input.
+
+	For all the modes of operation, scalpel requires that the raw reads have been previously aligned with 
+	BWA using default parameters. See BWA description (at http://bio-bwa.sourceforge.net/bwa.shtml) for more info.
+
+
+COMMANDS AND OPTIONS
+
+	***Single mode***
+
+	usage: scalpel --single --bam <BAM file> --bed <BED file> --ref <FASTA file> [OPTIONS]
+
+	Detect INDELs in one single dataset (e.g., one individual).
+
+	OPTIONS:
+
+	    --help             : this (help) message
+	    --verbose          : verbose mode
+
+	  Required:
+	    --bam <BAM file>   : BAM file with the reference-aligned reads
+	    --bed <BED file>   : BED file with list of exome-target coordinates
+	    --ref <FASTA file> : reference genome in FASTA format
+
+	  Optional:
+	    --kmer <int>       : k-mer size [default 25]
+	    --covthr <int>     : threshold used to select source and sink [default 5]
+	    --lowcov <int>     : threshold used to remove low-coverage nodes [default 2]
+	    --covratio <float> : minimum coverage ratio for sequencing errors (default: 0.01)
+	    --radius <int>     : left and right extension (in base-pairs) [default 100]
+	    --window <int>     : window-size of the region to assemble (in base-pairs) [default 400]
+	    --step <int>       : delta shift for the sliding window (in base-pairs) [default100]
+	    --mapscore <int>   : minimum mapping quality for selecting reads to assemble [default 1]
+	    --pathlimit <int>  : limit number of sequence paths [default 100000]
+	    --mismatches <int> : max number of mismatches in near-perfect repeat detection [default 3]
+	    --dir <directory>  : output directory [default ./outdir]
+	    --numprocs <int>   : number of parallel jobs (1 for no parallelization) [default 1]
+	    --sample <string>  : only process reads/fragments in sample [default ALL]
+	    --coords <file>    : file with list of selected locations to examine [default null]
+
+	  Output:
+	    --intarget         : export mutations only inside the target regions from the BED file
+	    --mincov <int>     : minimum coverage for exporting mutation to file [default 5]
+	    --outratio <float> : minimum coverage ratio for exporting mutation to file (default: 0.05)
+
+	  Note 1: the list of detected INDELs is saved in file: OUTDIR/variants.*.indel.txt
+	  where OUTDIR is the output directory selected with option "--dir" [default ./outdir]
+
+	  Note 2: the input reference file (option "--ref") must be the same one that was used to create the BAM file.
+
+	***Denovo mode***
+
+	usage: scalpel --denovo --dad <BAM file> --mom <BAM file> --aff <BAM file> --sib <BAM file> --bed <BED file> --ref <FASTA file> [OPTIONS]
+
+	Detect de novo INDELs in a family of four individuals (mom, dad, aff, sib).
+
+	OPTIONS:
+
+	    --help             : this (help) message
+	    --verbose          : verbose mode
+
+	  Required:
+	    --dad <BAM file>   : father BAM file
+	    --mom <BAM file>   : mother BAM file
+	    --aff <BAM file>   : affected child BAM file
+	    --sib <BAM file>   : sibling BAM file
+	    --bed <BED file>   : BED file with list of exome-target coordinates
+	    --ref <FASTA file> : reference genome in FASTA format
+
+	  Optional:
+	    --kmer <int>       : k-mer size [default 25]
+	    --covthr <int>     : threshold used to select source and sink [default 5]
+	    --lowcov <int>     : threshold used to remove low-coverage nodes [default 2]
+	    --covratio <float> : minimum coverage ratio for sequencing errors (default: 0.01)
+	    --radius <int>     : left and right extension (in base-pairs) [default 100]
+	    --window <int>     : window-size of the region to assemble (in base-pairs) [default 400]
+	    --step <int>       : delta shift for the sliding window (in base-pairs) [default 100]
+	    --mapscore <int>   : minimum mapping quality for selecting reads to assemble [default 1]
+	    --mismatches <int> : max number of mismatches in near-perfect repeat detection [default 3]
+	    --dir <directory>  : output directory [default ./outdir]
+	    --numprocs <int>   : number of parallel jobs (1 for no parallelization) [default 1]
+	    --coords <file>    : file with list of selected coordinates to examine [default null]
+
+	  Output:
+	    --intarget         : export mutations only inside the target regions from the BED file
+	    --mincov <int>     : minimum coverage for exporting mutation to file [default 5]
+	    --outratio <float> : minimum coverage ratio for exporting mutation to file (default: 0.05)
+
+	  Note 1: the list of de novo INDELs is saved in file: OUTDIR/denovos.*.indel.txt
+	  where OUTDIR is the output directory selected with option "--dir" [default ./outdir]
+
+	  Note 2: the input reference file (option "--ref") must be the same one that was used to create the BAM file.
+
+	***Somatic mode***
+	
+	usage: scalpel --somatic --normal <BAM file> --tumor <BAM file> --bed <BED file> --ref <FASTA file> [OPTIONS]
+
+	Detect somatic INDELs in a tumor/sample pair
+
+	OPTIONS:
+
+	    --help                : this (help) message
+	    --verbose             : verbose mode
+
+	  Required:
+	    --normal <BAM file>   : normal BAM file
+	    --tumor  <BAM file>   : tumor BAM file
+	    --bed    <BED file>   : BED file with list of exome-target coordinates
+	    --ref    <FASTA file> : reference genome in FASTA format
+
+	  Optional:
+	    --kmer <int>          : k-mer size [default 25]
+	    --covthr <int>        : threshold used to select source and sink [default 5]
+	    --lowcov <int>        : threshold used to remove low-coverage nodes [default 2]
+	    --covratio <float>    : minimum coverage ratio for sequencing errors (default: 0.01)
+	    --radius <int>        : left and right extension (in base-pairs) [default 100]
+	    --window <int>        : window-size of the region to assemble (in base-pairs) [default 400]
+	    --step <int>          : delta shift for the sliding window (in base-pairs) [default 100]
+	    --mapscore <int>      : minimum mapping quality for selecting reads to assemble [default 1]
+	    --mismatches <int>    : max number of mismatches in near-perfect repeat detection [default 3]
+	    --dir <directory>     : output directory [default ./outdir]
+	    --numprocs <int>      : number of parallel jobs (1 for no parallelization) [default 1]
+	    --coords <file>       : file with list of selected coordinates to examine [default null]
+
+	  Output:
+	    --intarget            : export mutations only inside the target regions from the BED file
+	    --mincov <int>        : minimum coverage for exporting mutation to file [default 5]
+	    --outratio <float>    : minimum coverage ratio for exporting mutation to file (default: 0.05)
+
+	  Note 1: the list of somatic INDELs is saved in file: OUTDIR/somatic.*.indel.txt 
+	  where OUTDIR is the output directory selected with option "--dir" [default ./outdir]
+
+	  Note 2: the input reference file (option "--ref") must be the same one that was used to create the BAM file.
+
+OUTPUT FORMAT
+
+	The list of candidate mutations is exported according to the following format:
+	
+	[columns 1 to 5 describe the mutation according to the "annovar" format (http://www.openbioinformatics.org/annovar/)]
+	
+	The columns description are:
+		
+	- chr         : chromosome
+	- start       : start position
+	- end         : end position
+	- ref         : reference nucleotides
+	- obs         : observed nucleotides
+	- id          : id of the sample where the mutation is (only for --denovo and --somatic mode)
+	- size        : size (in nt) of the mutation.
+	- type        : deletion or insertion
+	- avgKCov     : average k-mer coverage for the mutation
+	- minKCov     : minimum k-mer coverage for the mutation (can be different from avgKCov for insertions)
+	- zygosity    : homozygous or heterozygous
+	- altKCov     : coverage of alternative alleles at locus (>0 for heterozygous mutation)
+	- covRatio    : coverage ratio computed as minKCov/(minKCov+altKCov)
+	- chi2score   : chi-squared statistic (based on coverage)
+	- inheritance : if mutation is found in parents (for --denovo mode) or if found in normal (for --somatic mode)
+	- bestState   : state of the mutations as described below (only for --denovo and --somatic mode)  
+	- covState    : coverage state of the mutation as described below (only for --denovo and --somatic mode)
+	
+	The format of "bestState" for --denovo mode is as follows:
+	"momR dadR affR sibR/momA dadA affA sibA"
+	where (for example) momR stands for the number of copies of the reference allele
+	in the mother’s genotype and affA stands for the number of copies of the alternative
+	allele in the genotype of the affected child.
+	
+	Similarly, the format of "bestState" for --somatic mode is as follows:
+	"normalR tumorR/normalA tumorA"
+	where (for example) normalR stands for the number of copies of the reference allele
+	in the normal’s genotype and tumorA stands for the number of copies of the alternative
+	allele in the genotype of the tumor.
+	
+	The format of "covState" for --denovo mode is as follows:
+	"momRcov dadRcov affRcov sibRcov/momAcov dadAcov affAcov sibAcov"
+	where (for example) "momRcov" stands for the k-mer coverage of the reference allele
+	in the mother’s genotype and "affAcov" stands for the k-mer coverage of the alternative
+	allele in the genotype of the affected child.
+	
+	Similarly, the format of "covState" for --somatic mode is as follows:
+	"normalRcov tumorRcov/normalAcov tumorAcov"
+	where (for example) "normalRcov" stands for the k-mer coverage of the reference allele
+	in the normal’s genotype and "tumorAcov" stands for the k-mer coverage of the alternative
+	allele in the genotype of the tumor.
+
+SEE ALSO
+
+	Scalpel website <http://scalpel.sourceforge.net/>
+	Scalpel SourceForge project page <http://sourceforge.net/projects/scalpel/>
+
+AUTHOR
+
+	Giuseppe Narzisi and Michael C. Schatz, Cold Spring Harbor Laboratory (CSHL).
+
+LICENSE
+
+	The Scalpel package is distributed under the MIT License.
+
+Citation
+
+	Giuseppe Narzisi et al. "Accurate detection of de novo and transmitted INDELs within exome-capture data using micro-assembly" 2013 (under review).
