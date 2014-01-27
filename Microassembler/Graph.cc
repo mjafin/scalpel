@@ -121,7 +121,7 @@ void Graph_t::loadSequence(int readid, const string & seq, bool isRef, int trim5
 				readCycles++;
 			}
 
-			readid = -1;
+			//readid = -1;
 		}
 
 		ui->second->addEdge(vc.mer_m, fdir, readid);

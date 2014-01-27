@@ -76,6 +76,8 @@ char rrc(char b)
 		case 'C' : return 'G'; case 'c' : return 'g';
 		case 'G' : return 'C'; case 'g' : return 'c';
 		case 'T' : return 'A'; case 't' : return 'a';
+		case 'N' : return 'N'; case 'n' : return 'n'; 
+		
 	}
 
 	return 0;
