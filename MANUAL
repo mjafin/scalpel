@@ -183,7 +183,7 @@ OUTPUT FORMAT
 	- zygosity    : homozygous or heterozygous
 	- altKCov     : coverage of alternative alleles at locus (>0 for heterozygous mutation)
 	- covRatio    : coverage ratio computed as minKCov/(minKCov+altKCov)
-	- chi2score   : chi-squared statistic (based on coverage)
+	- chi2score   : chi-squared statistic (based on coverage), it is recommended to use chi-square score ≤ 10.84 for high confidence indels.
 	- inheritance : if mutation is found in parents (for --denovo mode) or if found in normal (for --somatic mode)
 	- bestState   : state of the mutations as described below (only for --denovo and --somatic mode)  
 	- covState    : coverage state of the mutation as described below (only for --denovo and --somatic mode)
@@ -227,4 +227,6 @@ LICENSE
 
 Citation
 
-	Giuseppe Narzisi et al. "Accurate detection of de novo and transmitted INDELs within exome-capture data using micro-assembly" 2013 (under review).
+	Narzisi G., O'Rawe J.A., Iossifov I., Fang H., Lee Y., Wang Z., Wu Y., Lyon G.J., Wigler M., Schatz M.C.
+	Accurate detection of de novo and transmitted INDELs within exome-capture data using micro-assembly
+	CSHL bioRxiv (DOI: 10.1101/001370)
