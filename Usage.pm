@@ -39,6 +39,7 @@ my %defaults = (
 	pathlimit 			=> 100000,
 	format				=> "annovar",
 	SVtype				=> "all",
+	version_num			=> "0.1.1(beta)",
 );
 
 #####################################################
@@ -227,7 +228,7 @@ OPTIONS:
     --bed <file>       : BED file with list of exome-target coordinates
   
   Optional:
-    --format <text>    : output format (annovar | VCF) [default $defaults{format}]
+    --format <text>    : output format (annovar | vcf) [default $defaults{format}]
     --type <text>      : mutation type (snp, del, ins, indel, all: everything) [default $defaults{SVtype}]
     --mincov <int>     : minimum coverage for a mutation to be exported  [default $defaults{min_cov}]
     --maxcov <int>     : maximum coverage for a mutation to be exported  [default $defaults{max_cov}]
@@ -237,7 +238,7 @@ OPTIONS:
 
   Supported output formats:
     1. annovar
-    2. VCF (not supported yet)
+    2. vcf
 
 END
 exit;

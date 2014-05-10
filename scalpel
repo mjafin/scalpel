@@ -71,7 +71,7 @@ my $outratio = $defaults->{outratio};
 my $argcnt = scalar(@ARGV);
 my $start_time = time;
 
-my $version_num = "0.1.1 (beta)";
+my $version_num = $defaults->{version_num};
 
 #####################################################
 #
@@ -82,7 +82,7 @@ print STDERR <<END;
 
 Program: scalpel (micro-assembly variant detection)
 Version: $version_num
-Contact: Giuseppe Narzisi <gnarzisi\@cshl.edu>
+Contact: Giuseppe Narzisi <gnarzisi\@nygenome.org>
 END
 }
 

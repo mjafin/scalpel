@@ -791,7 +791,7 @@ void Graph_t::dfs(Node_t * source, Node_t * sink, Ori_t dir,
 						else
 						{
 							//transcript.push_back(Transcript_t(rrpos, code, ref_aln[i], path_aln[i], spanner->cov_m));
-							transcript.push_back(Transcript_t(rrpos, code, ref_aln[i], path_aln[i], cov_at_pos));
+							transcript.push_back(Transcript_t(rrpos, code, ref_aln[i], path_aln[i], cov_at_pos, ref_aln[i-1]));
 							//min_cov = 1000000;
 						}
 					}
@@ -807,7 +807,7 @@ void Graph_t::dfs(Node_t * source, Node_t * sink, Ori_t dir,
 				for (unsigned int ti = 0; ti < transcript.size(); ti++)
 				{
 					//cerr << " " << transcript[ti].pos << ":" << transcript[ti].ref << "|" << transcript[ti].qry << "|" << transcript[ti].cov;
-					cerr << " " << transcript[ti].pos << ":" << transcript[ti].ref << "|" << transcript[ti].qry << "|" << transcript[ti].getAvgCov() << "|" << transcript[ti].getMinCov();
+					cerr << " " << transcript[ti].pos << ":" << transcript[ti].ref << "|" << transcript[ti].qry << "|" << transcript[ti].getAvgCov() << "|" << transcript[ti].getMinCov() << "|" << transcript[ti].prev_bp;
 				}
 
 				cerr << endl;

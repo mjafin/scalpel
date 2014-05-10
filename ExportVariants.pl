@@ -146,6 +146,12 @@ sub printVariants {
 	if($mode eq "annovar") { # annovar format
 		print "#chr\tstart\tend\tref\tobs\tid\tsize\ttype\tavgKcov\tminKcov\tzygosity\taltKcov\tcovRatio\tchi2score\tinheritance\tbestState\tcovState\n"; 
 	} 
+	if($mode eq "vcf") { # vcf format
+		print "##fileformat=VCFv4.1\n";
+		print "##source=scalpel$defaults->{version_num}\n";
+		#print "##reference=XXX\n";
+		print "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\n";
+	}
 	elsif($mode eq "scalpel") { # scalpel format
 		print "#ID\tchr\tpos\ttype\tlength\tavgKcov\tminKcov\tzygosity\tref\tobs\taltKcov\tloglikelihood\tchi2score\tinheritance\tbestState\tcovState\n"; 
 	}
@@ -172,6 +178,7 @@ sub printVariants {
 		my $l = $mut->{len};
 		my $ref = $mut->{ref};
 		my $qry = $mut->{seq}; 
+		my $prevbp = $mut->{prevbp}; 
 		my $avgcov = $mut->{avgcov}; 
 		my $mincov = $mut->{mincov}; 
 		my $sta = $mut->{status};
@@ -221,7 +228,9 @@ sub printVariants {
 		
 		my $annovar_ref = $ref;
 		my $annovar_qry = $qry;
-				
+		my $vcf_ref = $prevbp . $ref;
+		my $vcf_qry = $prevbp . $qry;
+		
 		if($sta eq "ok") { ## only report clean indels...
 			
 			if($t eq "snp") { 
@@ -240,10 +249,12 @@ sub printVariants {
 			if($t eq "ins") { 
 				$num_ins++; 
 				$annovar_ref = "-";
+				$vcf_ref = $prevbp;
 			}
 			if($t eq "del") { 
 				$num_del++; 
 				$annovar_qry = "-";
+				$vcf_qry = $prevbp;
 			}
 			
 			my $start = $pos;
@@ -252,6 +263,12 @@ sub printVariants {
 			my $str;
 			if($mode eq "annovar") { # annovar format
 				$str = sprintf("%s\t%d\t%d\t%s\t%s\t%s\t%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", $chr, $start, $end, $annovar_ref, $annovar_qry, $id, $l, $t, $avgcov, $mincov, $zyg, $altcov, $covRatio, $chi2Score, $inher, $bestState, $covState);
+			}
+			elsif($mode eq "vcf") { # vcf format	
+				#CHROM POS ID REF ALT QUAL FILTER INFO
+				my $info = "AVGCOV=$avgcov;MINCOV=$mincov;ALTCOV=$altcov;ZYG=$zyg;COVRATIO=$covRatio;CHI2=$chi2Score;INH=$inher;BESTSTATE=$bestState;COVSTATE=$covState";
+				if($t eq "snp") { $str = sprintf("%s\t%d\t%s\t%s\t%s\t%s\t%s\t%s\n", $chr, $start, ".", $ref, $qry, ".", "PASS", $info); }
+				else { $str = sprintf("%s\t%d\t%s\t%s\t%s\t%s\t%s\t%s\n", $chr, $start-1, ".", $vcf_ref, $vcf_qry, ".", "PASS", $info); }
 			} 
 			else { 
 				$str = sprintf("%s\t%d\t%s\t%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", $chr, $pos, $t, $l, $avgcov, $mincov, $zyg, $ref, $qry, $id, $altcov, $covRatio, $chi2Score, $inher, $bestState, $covState);

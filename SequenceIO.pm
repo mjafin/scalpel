@@ -83,7 +83,7 @@ sub loadExonsBed {
 	while (<EXONSLIST>)
 	{
 		chomp;
-		next if ($_ =~ /^#/); # skip comments
+		next if ($_ =~ /^#/ || $_ =~ /^@/); # skip comments
 		
 		#my ($chr, $start, $end) = split /\t/, $_, 3;
 		my @array = split /\t/, $_;
