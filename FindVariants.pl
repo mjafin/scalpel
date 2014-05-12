@@ -388,12 +388,15 @@ sub assemblyExons {
 	my $stats = $hash->{stats}; 
 
 	#if ($VERBOSE) {
-		print STDERR "\nDfs limit: $stats->{num_dfs_limit}\n";
-		print STDERR "Partial alignments: $stats->{num_partial_align}\n";
-		print STDERR "Cycles: $stats->{num_with_cycles}\n";
-		print STDERR "OK assemblies: $stats->{num_ok}\n";
-		print STDERR "Exceptions: $stats->{num_exceptions}\n";
-		print STDERR "Repeats: $stats->{num_repeats}\n\n";
+	if(exists $hash->{stats})  {
+		my $sts = $hash->{stats};
+		print STDERR "\nDfs limit: $sts->{num_dfs_limit}\n";
+		print STDERR "Partial alignments: $sts->{num_partial_align}\n";
+		print STDERR "Cycles: $sts->{num_with_cycles}\n";
+		print STDERR "OK assemblies: $sts->{num_ok}\n";
+		print STDERR "Exceptions: $sts->{num_exceptions}\n";
+		print STDERR "Repeats: $sts->{num_repeats}\n\n";
+	}
 	#}
 }
 
