@@ -86,6 +86,7 @@ my %readgroups;
 my %refcov;
 my %loc2keys;
 my %genome;
+my $variants_dbm_obj;
 
 my $argcnt = scalar(@ARGV);
 my $start_time = time;
@@ -203,7 +204,7 @@ sub run {
 	loadGenomeFasta($REF, \%genome);
 	
 	if (-e "$fdir/variants.db.dir") { runCmd("remove database files", "rm $fdir/variants.db.*"); }	
-	my $variants_dbm_obj = tie %variants, 'MLDBM::Sync', "$fdir/variants.db", O_CREAT|O_RDWR, 0640;	
+	$variants_dbm_obj = tie %variants, 'MLDBM::Sync', "$fdir/variants.db", O_CREAT|O_RDWR, 0640;	
 	#$variants_dbm_obj->SyncCacheSize('1000M');    # 1000 Megabyte max memory used
 	
 	#print "$bamfile\n";
@@ -502,6 +503,9 @@ sub computeHomHetState {
 	
 	my $hom_cnt = 0;
 	my $het_cnt = 0;
+	
+	# improve performance: tie once to database and do all read/wrote operations.
+	$variants_dbm_obj->Lock;
 
 	foreach my $currKey (keys %$vars) {
 		
@@ -561,7 +565,7 @@ sub computeHomHetState {
 			$currMut->{zygosity} = "het";
 			$het_cnt++;
 		}
-		else { # alleCnt == 1
+		else { # alleCnt <= 1
 			$currMut->{zygosity} = "hom";
 			$hom_cnt++;
 		}
@@ -569,6 +573,8 @@ sub computeHomHetState {
 		# update mutation in db
 		$vars->{$currKey} = $currMut;
 	}
+	
+	$variants_dbm_obj->UnLock;
 
 	print STDERR "Num. Homozygous: $hom_cnt\n";
 	print STDERR "Num. Heterozygous: $het_cnt\n";
