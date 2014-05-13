@@ -58,6 +58,7 @@ my $WORK  = $defaults->{WORK};
 my $MAX_PROCESSES = $defaults->{MAX_PROCESSES};
 my $sample = $defaults->{sample};
 my $selected = $defaults->{selected};
+my $outformat = $defaults->{format};
 my $intarget;
 
 #microassembler parameters:
@@ -121,6 +122,7 @@ GetOptions(
     'numprocs=i'   => \$MAX_PROCESSES,
     'sample=s'     => \$sample,
     'coords=s'     => \$selected,
+    'format=s'     => \$outformat,
 
 	# ouptut parameters
 	'intarget!'    => \$intarget,
@@ -175,6 +177,7 @@ sub printParams {
 	print PFILE "-- bed file: $bedfile\n";
 	print PFILE "-- reference file: $REF\n";
 	print PFILE "-- sample: $sample\n";
+	print PFILE "-- output format for variants: $outformat\n";
 	print PFILE "-- file of selected coordinates: $selected\n";
 	if($intarget) { print PFILE "-- output variants in target? yes\n"; }
 	else { print PFILE "-- output variants in target? no\n"; }
@@ -261,13 +264,14 @@ sub exportSVs {
 	my $command = "$exportTool ".
 		"--db $WORK/variants.db ".
 		"--bed $bedfile ".
-		"--format annovar ".
+		"--format $outformat ".
 		"--type indel ". 
 		"--mincov $min_cov ". 
 		"--maxcov $max_cov ".
 		"--covratio $outratio";
 	if($intarget) { $command .= " --intarget"; }
-	$command .= " > $WORK/variants.${min_cov}x.indel.txt";
+	if ($outformat eq "annovar") { $command .= " > $WORK/variants.${min_cov}x.indel.annovar"; }
+	elsif ($outformat eq "vcf") { $command .= " > $WORK/variants.${min_cov}x.indel.vcf"; }
 	
 	print STDERR "Command: $command\n" if($VERBOSE);
 	runCmd("ExportVariants", $command);

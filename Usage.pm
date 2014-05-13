@@ -89,11 +89,12 @@ OPTIONS:
     --coords <file>    : file with list of selected locations to examine [default $defaults{selected}]
 
   Output:
+    --format           : export mutations in selected format (annovar | vcf) [default $defaults{format}]
     --intarget         : export mutations only inside the target regions from the BED file
     --mincov <int>     : minimum coverage for exporting mutation to file [default $defaults{min_cov}]
     --outratio <float> : minimum coverage ratio for exporting mutation to file (default: $defaults{outratio})
 
-  Note 1: the list of detected INDELs is saved in file: OUTDIR/variants.*.indel.txt
+  Note 1: the list of detected INDELs is saved in file: OUTDIR/variants.*.indel.*
   where OUTDIR is the output directory selected with option "--dir" [default $defaults{WORK}]
 
   Note 2: the input reference file (option "--ref") must be the same one that was used to create the BAM file.
@@ -143,11 +144,12 @@ OPTIONS:
     --coords <file>    : file with list of selected coordinates to examine [default $defaults{selected}]
 
   Output:
+    --format           : export mutations in selected format (annovar | vcf) [default $defaults{format}]
     --intarget         : export mutations only inside the target regions from the BED file
     --mincov <int>     : minimum coverage for exporting mutation to file [default $defaults{min_cov}]
     --outratio <float> : minimum coverage ratio for exporting mutation to file (default: $defaults{outratio})
 
-  Note 1: the list of de novo INDELs is saved in file: OUTDIR/denovos.*.indel.txt
+  Note 1: the list of de novo INDELs is saved in file: OUTDIR/denovos.*.indel.*
   where OUTDIR is the output directory selected with option "--dir" [default $defaults{WORK}]
 
   Note 2: the input reference file (option "--ref") must be the same one that was used to create the BAM file.
@@ -195,11 +197,12 @@ OPTIONS:
     --coords <file>       : file with list of selected coordinates to examine [default $defaults{selected}]
 
   Output:
+    --format              : export mutations in selected format (annovar | vcf) [default $defaults{format}]
     --intarget            : export mutations only inside the target regions from the BED file
     --mincov <int>        : minimum coverage for exporting mutation to file [default $defaults{min_cov}]
     --outratio <float>    : minimum coverage ratio for exporting mutation to file (default: $defaults{outratio})
 
-  Note 1: the list of somatic INDELs is saved in file: OUTDIR/somatic.*.indel.txt 
+  Note 1: the list of somatic INDELs is saved in file: OUTDIR/somatic.*.indel.* 
   where OUTDIR is the output directory selected with option "--dir" [default $defaults{WORK}]
 
   Note 2: the input reference file (option "--ref") must be the same one that was used to create the BAM file.
@@ -228,7 +231,7 @@ OPTIONS:
     --bed <file>       : BED file with list of exome-target coordinates
   
   Optional:
-    --format <text>    : output format (annovar | vcf) [default $defaults{format}]
+    --format <text>    : output format for variants (annovar | vcf) [default $defaults{format}]
     --type <text>      : mutation type (snp, del, ins, indel, all: everything) [default $defaults{SVtype}]
     --mincov <int>     : minimum coverage for a mutation to be exported  [default $defaults{min_cov}]
     --maxcov <int>     : maximum coverage for a mutation to be exported  [default $defaults{max_cov}]

@@ -63,6 +63,7 @@ my $MAX_PROCESSES = $defaults->{MAX_PROCESSES};
 my $sample = $defaults->{sample};
 my $selected = $defaults->{selected};
 my $dfs_limit = $defaults->{pathlimit};
+my $outformat = $defaults->{format};
 
 # output parameters
 my $intarget;
@@ -152,6 +153,7 @@ GetOptions(
     'numprocs=i'   => \$MAX_PROCESSES,
     'sample=s'     => \$sample,
     'coords=s'     => \$selected,
+	'format=s'     => \$outformat,
 	'intarget!'    => \$intarget,
 
 ) or usage();
@@ -205,6 +207,7 @@ sub init()
 					"--pathlimit $dfs_limit ".
 					"--dir $ABS_WORK ".
 					"--numprocs $MAX_PROCESSES ".
+					"--format $outformat ".
 					"--coords $selected";
 				if($VERBOSE) { $command .= " --verbose"; }
 				if($intarget) { $command .= " --intarget"; }
@@ -253,6 +256,7 @@ sub init()
 					"--mismatches $maxmismatch ".
 					"--dir $DIR_main ".
 					"--numprocs $MAX_PROCESSES ".
+					"--format $outformat ".
 					"--coords $selected";
 				if($VERBOSE) { $command_main .= " --verbose"; }
 				if($intarget) { $command_main .= " --intarget"; }
@@ -262,7 +266,9 @@ sub init()
 				runCmd("FindDenovos", $command_main);
 			
 				# extract coordinates of candidate mutation
-				my $infile  = "$DIR_main/denovos.${min_cov}x.indel.txt";
+				my $infile = "";
+				if ($outformat eq "annovar") { $infile = "$DIR_main/denovo.${min_cov}x.indel.annovar"; }
+				elsif ($outformat eq "vcf") { $infile  = "$DIR_main/denovo.${min_cov}x.indel.vcf"; }				
 				my $outfile = "$DIR_main/coords.txt";
 				extractCoords($infile, $outfile);
 			
@@ -297,6 +303,7 @@ sub init()
 					"--mismatches $maxmismatch ".
 					"--dir $DIR_val ".
 					"--numprocs $MAX_PROCESSES ".
+					"--format $outformat ".
 					"--coords $outfile";
 				if($VERBOSE) { $command_val .= " --verbose"; }
 				if($intarget) { $command_val .= " --intarget"; }
@@ -304,9 +311,14 @@ sub init()
 				print STDERR "Command: $command_val\n" if($VERBOSE);
 				print STDERR "\n***VALIDATION PHASE***\n";
 				runCmd("FindDenovos", $command_val);
-			
+				
 				#copy denovo indels to main directory
-				copy("$DIR_val/denovos.${min_cov}x.indel.txt","$ABS_WORK/denovos.${min_cov}x.indel.txt") or die "Copy failed: $!";
+				if ($outformat eq "annovar") {
+					copy("$DIR_val/denovo.${min_cov}x.indel.annovar","$ABS_WORK/denovo.${min_cov}x.indel.annovar") or die "Copy failed: $!";
+				}
+				elsif ($outformat eq "vcf") {				
+					copy("$DIR_val/denovo.${min_cov}x.indel.vcf","$ABS_WORK/denovo.${min_cov}x.indel.vcf") or die "Copy failed: $!";
+				}
 			}
 		}
 		if($somatic) { 
@@ -348,6 +360,7 @@ sub init()
 					"--mismatches $maxmismatch ".
 					"--dir $DIR_main ".
 					"--numprocs $MAX_PROCESSES ".
+					"--format $outformat ".
 					"--coords $selected";	
 				if($VERBOSE) { $command_main .= " --verbose"; }
 				if($intarget) { $command_main .= " --intarget"; }
@@ -357,7 +370,9 @@ sub init()
 				runCmd("FindSomatic", $command_main);
 			
 				# extract coordinates of candidate mutation
-				my $infile  = "$DIR_main/somatic.${min_cov}x.indel.txt";
+				my $infile = "";
+				if ($outformat eq "annovar") { $infile = "$DIR_main/somatic.${min_cov}x.indel.annovar"; }
+				elsif ($outformat eq "vcf") { $infile  = "$DIR_main/somatic.${min_cov}x.indel.vcf"; }
 				my $outfile = "$DIR_main/coords.txt";
 				extractCoords($infile, $outfile);
 			
@@ -390,6 +405,7 @@ sub init()
 					"--mismatches $maxmismatch ".
 					"--dir $DIR_val ".
 					"--numprocs $MAX_PROCESSES ".
+					"--format $outformat ".
 					"--coords $outfile";
 				if($VERBOSE) { $command_val .= " --verbose"; }	
 				if($intarget) { $command_val .= " --intarget"; }
@@ -398,8 +414,13 @@ sub init()
 				print STDERR "\n***VALIDATION PHASE***\n";
 				runCmd("FindSomatic", $command_val);
 			
-				#copy denovo indels to main directory
-				copy("$DIR_val/somatic.${min_cov}x.indel.txt","$ABS_WORK/somatic.${min_cov}x.indel.txt") or die "Copy failed: $!";
+				#copy somatic indels to main directory
+				if ($outformat eq "annovar") {
+					copy("$DIR_val/somatic.${min_cov}x.indel.annovar","$ABS_WORK/somatic.${min_cov}x.indel.annovar") or die "Copy failed: $!";
+				}
+				elsif ($outformat eq "vcf") {				
+					copy("$DIR_val/somatic.${min_cov}x.indel.vcf","$ABS_WORK/somatic.${min_cov}x.indel.vcf") or die "Copy failed: $!";
+				}
 			}
 		}
 		print STDERR "\nOutput saved in: $ABS_WORK\n";

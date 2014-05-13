@@ -58,6 +58,7 @@ my $WORK  = $defaults->{WORK};
 my $MAX_PROCESSES = $defaults->{MAX_PROCESSES};
 my $selected = $defaults->{selected};
 my $dfs_limit = $defaults->{pathlimit};
+my $outformat = $defaults->{format};
 my $intarget;
 
 my $help = 0;
@@ -111,6 +112,7 @@ GetOptions(
     'dir=s'        => \$WORK,
     'numprocs=i'   => \$MAX_PROCESSES,
     'coords=s'     => \$selected,
+    'format=s'     => \$outformat,
 
 	# ouptut parameters
 	'intarget!'    => \$intarget,
@@ -166,6 +168,7 @@ sub printParams {
 	print PFILE "-- bedfile: $BEDFILE\n";
 	print PFILE "-- reference file: $REF\n";
 	print PFILE "-- file of selected locations: $selected\n";
+	print PFILE "-- output format for variants: $outformat\n";
 	if($intarget) { print PFILE "-- output variants in target? yes\n"; }
 	else { print PFILE "-- output variants in target? no\n"; }
 	
@@ -283,6 +286,7 @@ sub callSVs {
 		"--sample ALL ".
 		"--numprocs $MAX_PROCESSES ".
 		"--coords $selected ".
+		"--format $outformat ".
 		"--cov2file";
 	if($intarget) { $command .= " --intarget"; }	
 	if($VERBOSE) { $command .= " --verbose"; }
@@ -563,13 +567,14 @@ sub exportSVs {
 	my $command_somatic = "$exportTool ".
 		"--db $WORK/somatic.db ".
 		"--bed $BEDFILE ".
-		"--format annovar ".
+		"--format $outformat ".
 		"--type indel ". 
 		"--mincov $min_cov ". 
 		"--maxcov $max_cov ".
 		"--covratio $outratio";
 	if($intarget) { $command_somatic .= " --intarget"; }
-	$command_somatic .= " > $WORK/somatic.${min_cov}x.indel.txt";
+	if ($outformat eq "annovar") { $command_somatic .= " > $WORK/somatic.${min_cov}x.indel.annovar"; }
+	elsif ($outformat eq "vcf") { $command_somatic .= " > $WORK/somatic.${min_cov}x.indel.vcf"; }
 	
 	print STDERR "Command: $command_somatic\n" if($VERBOSE);
 	runCmd("export somatic", $command_somatic);
@@ -582,13 +587,14 @@ sub exportSVs {
 	my $command_comm = "$exportTool ".
 		"--db $WORK/common.db ".
 		"--bed $BEDFILE ".
-		"--format annovar ".
+		"--format $outformat ".
 		"--type indel ". 
 		"--mincov $min_cov ". 
 		"--maxcov $max_cov ".
 		"--covratio $outratio";
 	if($intarget) { $command_comm .= " --intarget"; }
-	$command_comm .= " > $WORK/common.${min_cov}x.indel.txt";
+	if ($outformat eq "annovar") { $command_comm .= " > $WORK/common.${min_cov}x.indel.annovar"; }
+	elsif ($outformat eq "vcf") { $command_comm .= " > $WORK/common.${min_cov}x.indel.vcf"; }
 	
 	print STDERR "Command: $command_comm\n" if($VERBOSE);
 	runCmd("export common", $command_comm);
