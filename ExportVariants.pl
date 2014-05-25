@@ -149,8 +149,20 @@ sub printVariants {
 	if($mode eq "vcf") { # vcf format
 		print "##fileformat=VCFv4.1\n";
 		print "##source=scalpel$defaults->{version_num}\n";
+		print "##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">\n";
+		print "##FORMAT=<ID=DP,Number=1,Type=Integer,Description=\"Read Depth\">\n";
+		print "##FORMAT=<ID=AD,Number=.,Type=Integer,Description=\"Reads supporting reference/indel at the site\">\n";
+		print "##INFO=<ID=AVGCOV,Number=1,Type=Float,Description=\"Average coverage of ALT\">\n";
+		print "##INFO=<ID=MINCOV,Number=1,Type=Integer,Description=\"Minimum coverage of ALT\">\n";
+		print "##INFO=<ID=ALTCOV,Number=1,Type=Integer,Description=\"REF coverage\">\n";
+		print "##INFO=<ID=ZYG,Number=1,Type=String,Description=\"Zygosity\">\n";
+		print "##INFO=<ID=COVRATIO,Number=1,Type=Float,Description=\"Coverage ratio for ALT\">\n";
+		print "##INFO=<ID=CHI2,Number=1,Type=Float,Description=\"Chi2\">\n";
+		print "##INFO=<ID=INH,Number=1,Type=String,Description=\"Inheritance for somatic\">\n";
+		print "##INFO=<ID=BESTSTATE,Number=1,Type=String,Description=\"Best genotype state REF(n,t)/ALT(n,t)\">\n";
+		print "##INFO=<ID=COVSTATE,Number=1,Type=String,Description=\"Coverages REF(n,t)/ALT(n,t)/OTH(n,t)\">\n";
 		#print "##reference=XXX\n";
-		print "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\n";
+		print "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\tsample\n";
 	}
 	elsif($mode eq "scalpel") { # scalpel format
 		print "#ID\tchr\tpos\ttype\tlength\tavgKcov\tminKcov\tzygosity\tref\tobs\taltKcov\tloglikelihood\tchi2score\tinheritance\tbestState\tcovState\n"; 
@@ -266,9 +278,12 @@ sub printVariants {
 			}
 			elsif($mode eq "vcf") { # vcf format	
 				#CHROM POS ID REF ALT QUAL FILTER INFO
+				my $format_str = "GT:AD:DP";
+				my $gt = $zyg eq "het" ? "0/1" : "1/1";
+				my $format_val = "$gt:$altcov,$mincov:$totcov";
 				my $info = "AVGCOV=$avgcov;MINCOV=$mincov;ALTCOV=$altcov;ZYG=$zyg;COVRATIO=$covRatio;CHI2=$chi2Score;INH=$inher;BESTSTATE=$bestState;COVSTATE=$covState";
 				if($t eq "snp") { $str = sprintf("%s\t%d\t%s\t%s\t%s\t%s\t%s\t%s\n", $chr, $start, ".", $ref, $qry, ".", "PASS", $info); }
-				else { $str = sprintf("%s\t%d\t%s\t%s\t%s\t%s\t%s\t%s\n", $chr, $start-1, ".", $vcf_ref, $vcf_qry, ".", "PASS", $info); }
+				else            { $str = sprintf("%s\t%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", $chr, $start-1, ".", $vcf_ref, $vcf_qry, ".", "PASS", $info, $format_str, $format_val); }
 			} 
 			else { 
 				$str = sprintf("%s\t%d\t%s\t%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", $chr, $pos, $t, $l, $avgcov, $mincov, $zyg, $ref, $qry, $id, $altcov, $covRatio, $chi2Score, $inher, $bestState, $covState);
