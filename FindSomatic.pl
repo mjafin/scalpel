@@ -486,10 +486,12 @@ sub parseBestState {
 		my @R = split("", $REF); # reference
 		my @A = split("", $ALT); # alternative
 		my $n=0; my $t=1;
-		if ( ($A[$n]>0) && ($A[$t]>0) ) { # both in normal and tumor
+		#if ( ($A[$n]>0) && ($A[$t]>0) ) { # both in normal and tumor
+		if ( $A[$n] == $A[$t] ) { # genotypes for ALT identical 
 			$sv->{inheritance} = "normal";
 		}
-		elsif ( ($A[$n]==0) && ($A[$t]>0) ) { # only in tumor
+		#elsif ( ($A[$n]==0) && ($A[$t]>0) ) { # only in tumor
+		elsif ( $A[$n] != $A[$t] ) { # genotypes for ALT different 
 			$sv->{inheritance} = "no";
 			$sv->{somatic} = "yes";
 		}
