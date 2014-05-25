@@ -86,7 +86,7 @@ my %locations;
 my %readgroups;
 my %refcov;
 my %loc2keys;
-my %genome;
+###my %genome;
 my $variants_dbm_obj;
 
 my $argcnt = scalar(@ARGV);
@@ -204,7 +204,7 @@ sub run {
 	}
 	
 	#load genome from fasta file
-	loadGenomeFasta($REF, \%genome);
+	###loadGenomeFasta($REF, \%genome);
 	
 	if (-e "$fdir/variants.db.dir") { runCmd("remove database files", "rm $fdir/variants.db.*"); }	
 	$variants_dbm_obj = tie %variants, 'MLDBM::Sync', "$fdir/variants.db", O_CREAT|O_RDWR, 0640;	
@@ -453,8 +453,10 @@ sub schedule_jobs {
 			#if ($chr =~ /^chr/) { $chrom = substr($chr,3); }
 
 			print FILE ">$chr:$left-$right\n";
-			die "Undefined sequence ($chr)\n" if (!exists($genome{$chr}));
-			my $seq = substr($genome{$chr}->{seq}, $left-1, $right-$left+1);
+			### die "Undefined sequence ($chr)\n" if (!exists($genome{$chr}));
+			my ($header, $seq) = split(/\n/, `samtools faidx $REF $chr:$left-$right`, 2);
+			$seq =~ s/[\n\r\s]+//g; 
+			###my $seq = substr($genome{$chr}->{seq}, $left-1, $right-$left+1);
 			#my $seq = substr($genome{$chr}->{seq},$exonstart, $exonend-$exonstart+1);
 			for(my $i=0; $i<length($seq); $i+=80) {
 				my $str = substr($seq,$i,80);
@@ -465,7 +467,7 @@ sub schedule_jobs {
 	}
 	
 	# free genome memory before parallelization
-	for my $k (keys %genome) { delete $genome{$k}; }
+	###for my $k (keys %genome) { delete $genome{$k}; }
 	
 	my $pm = new Parallel::ForkManager($MAX_PROCESSES);
 	my $count = 0;
