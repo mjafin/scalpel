@@ -1,7 +1,10 @@
 N.B. This is a fork of the original work done by Giuseppe Narzisi. Fixes include:
 - Replace loading of full genome into memory by runtime extraction of sequence from an indexed genome via ```samtools faidx```
 - Fix bug in Microassembler.hh
-
+- Added FORMAT and sample fields to vcf. Added proper header fields
+- Somatic assignment more liberal (sufficient for genotype to be different 
+between normal and tumor, i.e. ALT can be non-zero for normal as long as it's 
+different from the tumor ALT assignment)
 
 Introduction
 ============
