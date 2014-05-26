@@ -281,6 +281,7 @@ sub printVariants {
 				my $format_str = "GT:AD:DP";
 				my $gt = $zyg eq "het" ? "0/1" : "1/1";
 				my $format_val = "$gt:$altcov,$mincov:$totcov";
+                                $covState=~s/ /,/g; # no spaces allowed by vcf spec
 				my $info = "AVGCOV=$avgcov;MINCOV=$mincov;ALTCOV=$altcov;ZYG=$zyg;COVRATIO=$covRatio;CHI2=$chi2Score;INH=$inher;BESTSTATE=$bestState;COVSTATE=$covState";
 				if($t eq "snp") { $str = sprintf("%s\t%d\t%s\t%s\t%s\t%s\t%s\t%s\n", $chr, $start, ".", $ref, $qry, ".", "PASS", $info); }
 				else            { $str = sprintf("%s\t%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", $chr, $start-1, ".", $vcf_ref, $vcf_qry, ".", "PASS", $info, $format_str, $format_val); }
