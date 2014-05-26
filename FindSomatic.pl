@@ -540,7 +540,7 @@ sub findSomaticMut {
 			$somaticSVs{$k} = $mut;
 		}
 		else { # non somatic
-			if ($mut->{inheritance} eq "yes") {
+			if ($mut->{inheritance} eq "normal") {
 				$commonSVs{$k} = $mut;
 			}
 		}
