@@ -162,7 +162,7 @@ sub printVariants {
 		print "##INFO=<ID=BESTSTATE,Number=1,Type=String,Description=\"Best genotype state REF(n,t)/ALT(n,t)\">\n";
 		print "##INFO=<ID=COVSTATE,Number=1,Type=String,Description=\"Coverages REF(n,t)/ALT(n,t)/OTH(n,t)\">\n";
 		#print "##reference=XXX\n";
-		print "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\tsample\n";
+		print "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\tsample_name\n";
 	}
 	elsif($mode eq "scalpel") { # scalpel format
 		print "#ID\tchr\tpos\ttype\tlength\tavgKcov\tminKcov\tzygosity\tref\tobs\taltKcov\tloglikelihood\tchi2score\tinheritance\tbestState\tcovState\n"; 
