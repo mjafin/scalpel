@@ -156,7 +156,7 @@ sub printVariants {
 				
 		print "##INFO=<ID=AVGCOV,Number=1,Type=Float,Description=\"average k-mer coverage\">\n";
 		print "##INFO=<ID=MINCOV,Number=1,Type=Integer,Description=\"minimum k-mer coverage of non-reference allele\">\n";
-		print "##INFO=<ID=ALTCOV,Number=1,Type=Integer,Description=\"k-mer coverage of reference allele\">\n";
+		print "##INFO=<ID=ALTCOV,Number=1,Type=Integer,Description=\"k-mer coverage of reference + any other allele (different from current non-reference) at locus\">\n";
 		print "##INFO=<ID=ZYG,Number=1,Type=String,Description=\"zygosity\">\n";
 		print "##INFO=<ID=COVRATIO,Number=1,Type=Float,Description=\"coverage ratio [(MINCOV)/(ALTCOV+MINCOV)]\">\n";
 		print "##INFO=<ID=CHI2,Number=1,Type=Float,Description=\"chi-square score\">\n";
