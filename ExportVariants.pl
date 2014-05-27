@@ -154,21 +154,20 @@ sub printVariants {
 		print "##source=scalpel$defaults->{version_num}\n";		
 		#print "##reference=XXX\n";
 				
-		print "##INFO=<ID=AVGCOV,Number=1,Type=Float,Description=”average k-mer coverage”>\n";
-		print "##INFO=<ID=MINCOV,Number=1,Type=Integer,Description=”minimum k-mer coverage”>\n";
-		print "##INFO=<ID=ALTCOV,Number=1,Type=Integer,Description=”k-mer coverage of alternative allele”>\n";
-		print "##INFO=<ID=ZYG,Number=1,Type=String,Description=”zygosity”>\n";
-		print "##INFO=<ID=COVRATIO,Number=1,Type=Float,Description=”coverage ratio [(MINCOV+ALTCOV)/ALTCOV]”>\n";
-		print "##INFO=<ID=CHI2,Number=1,Type=Float,Description=”chi-square score”>\n";
-		print "##INFO=<ID=INH,Number=1,Type=String,Description=”inheritance”>\n";
-		print "##INFO=<ID=BESTSTATE,Number=1,Type=String,Description=”state of the mutation”>\n";
-		print "##INFO=<ID=COVSTATE,Number=1,Type=String,Description=”coverage state of the mutation”>\n";
-		
+		print "##INFO=<ID=AVGCOV,Number=1,Type=Float,Description=\"average k-mer coverage\">\n";
+		print "##INFO=<ID=MINCOV,Number=1,Type=Integer,Description=\"minimum k-mer coverage of non-reference allele\">\n";
+		print "##INFO=<ID=ALTCOV,Number=1,Type=Integer,Description=\"k-mer coverage of reference allele\">\n";
+		print "##INFO=<ID=ZYG,Number=1,Type=String,Description=\"zygosity\">\n";
+		print "##INFO=<ID=COVRATIO,Number=1,Type=Float,Description=\"coverage ratio [(MINCOV)/(ALTCOV+MINCOV)]\">\n";
+		print "##INFO=<ID=CHI2,Number=1,Type=Float,Description=\"chi-square score\">\n";
+		print "##INFO=<ID=INH,Number=1,Type=String,Description=\"inheritance\">\n";
+		print "##INFO=<ID=BESTSTATE,Number=1,Type=String,Description=\"state of the mutation\">\n";
+		print "##INFO=<ID=COVSTATE,Number=1,Type=String,Description=\"coverage state of the mutation\">\n";
 		print "##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">\n";
 		print "##FORMAT=<ID=DP,Number=1,Type=Integer,Description=\"k-mer Depth\">\n";
 		print "##FORMAT=<ID=AD,Number=.,Type=Integer,Description=\"k-mer depth supporting reference/indel at the site\">\n";
-		
-		print "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\n";
+		my $sample_name = "sample_name"; # replace by SM tag from @RG
+		print "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\t$sample_name\n";
 	}
 	elsif($mode eq "scalpel") { # scalpel format
 		print "#ID\tchr\tpos\ttype\tlength\tavgKcov\tminKcov\tzygosity\tref\tobs\taltKcov\tloglikelihood\tchi2score\tinheritance\tbestState\tcovState\n"; 
