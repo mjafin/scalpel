@@ -12,7 +12,8 @@
 
 use warnings;
 use strict;
-use POSIX;
+#use POSIX;
+use POSIX qw(strftime);
 use FindBin qw($Bin);
 use lib $Bin; # add $Bin directory to @INC
 use Usage;
@@ -148,9 +149,26 @@ sub printVariants {
 	} 
 	if($mode eq "vcf") { # vcf format
 		print "##fileformat=VCFv4.1\n";
-		print "##source=scalpel$defaults->{version_num}\n";
+		my $date = strftime "%m/%d/%Y", localtime;
+		print "##fileDate=$date\n";
+		print "##source=scalpel$defaults->{version_num}\n";		
 		#print "##reference=XXX\n";
-		print "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\n";
+				
+		print "##INFO=<ID=AVGCOV,Number=1,Type=Float,Description=”average k-mer coverage”>\n";
+		print "##INFO=<ID=MINCOV,Number=1,Type=Integer,Description=”minimum k-mer coverage”>\n";
+		print "##INFO=<ID=ALTCOV,Number=1,Type=Integer,Description=”k-mer coverage of alternative allele”>\n";
+		print "##INFO=<ID=ZYG,Number=1,Type=String,Description=”zygosity”>\n";
+		print "##INFO=<ID=COVRATIO,Number=1,Type=Float,Description=”coverage ratio [(MINCOV+ALTCOV)/ALTCOV]”>\n";
+		print "##INFO=<ID=CHI2,Number=1,Type=Float,Description=”chi-square score”>\n";
+		print "##INFO=<ID=INH,Number=1,Type=String,Description=”inheritance”>\n";
+		print "##INFO=<ID=BESTSTATE,Number=1,Type=String,Description=”state of the mutation”>\n";
+		print "##INFO=<ID=COVSTATE,Number=1,Type=String,Description=”coverage state of the mutation”>\n";
+		
+		print "##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">\n";
+		print "##FORMAT=<ID=DP,Number=1,Type=Integer,Description=\"k-mer Depth\">\n";
+		print "##FORMAT=<ID=AD,Number=.,Type=Integer,Description=\"k-mer depth supporting reference/indel at the site\">\n";
+		
+		print "#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\n";
 	}
 	elsif($mode eq "scalpel") { # scalpel format
 		print "#ID\tchr\tpos\ttype\tlength\tavgKcov\tminKcov\tzygosity\tref\tobs\taltKcov\tloglikelihood\tchi2score\tinheritance\tbestState\tcovState\n"; 
@@ -265,11 +283,15 @@ sub printVariants {
 				$str = sprintf("%s\t%d\t%d\t%s\t%s\t%s\t%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", $chr, $start, $end, $annovar_ref, $annovar_qry, $id, $l, $t, $avgcov, $mincov, $zyg, $altcov, $covRatio, $chi2Score, $inher, $bestState, $covState);
 			}
 			elsif($mode eq "vcf") { # vcf format	
-				#CHROM POS ID REF ALT QUAL FILTER INFO
-				my $info = "AVGCOV=$avgcov;MINCOV=$mincov;ALTCOV=$altcov;ZYG=$zyg;COVRATIO=$covRatio;CHI2=$chi2Score;INH=$inher;BESTSTATE=$bestState;COVSTATE=$covState";
-				if($t eq "snp") { $str = sprintf("%s\t%d\t%s\t%s\t%s\t%s\t%s\t%s\n", $chr, $start, ".", $ref, $qry, ".", "PASS", $info); }
-				else { $str = sprintf("%s\t%d\t%s\t%s\t%s\t%s\t%s\t%s\n", $chr, $start-1, ".", $vcf_ref, $vcf_qry, ".", "PASS", $info); }
-			} 
+				#CHROM POS ID REF ALT QUAL FILTER INFO FORMAT
+ 				my $format_str = "GT:AD:DP";
+  				my $gt = $zyg eq "het" ? "0/1" : "1/1";
+  				my $format_val = "$gt:$altcov,$mincov:$totcov";
+				$covState=~s/ /,/g; # no spaces allowed by vcf spec
+  				my $info = "AVGCOV=$avgcov;MINCOV=$mincov;ALTCOV=$altcov;ZYG=$zyg;COVRATIO=$covRatio;CHI2=$chi2Score;INH=$inher;BESTSTATE=$bestState;COVSTATE=$covState";
+  				if($t eq "snp") { $str = sprintf("%s\t%d\t%s\t%s\t%s\t%s\t%s\t%s\n", $chr, $start, ".", $ref, $qry, ".", "PASS", $info); }
+  				else            { $str = sprintf("%s\t%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", $chr, $start-1, ".", $vcf_ref, $vcf_qry, ".", "PASS", $info, $format_str, $format_val); }
+			}
 			else { 
 				$str = sprintf("%s\t%d\t%s\t%d\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n", $chr, $pos, $t, $l, $avgcov, $mincov, $zyg, $ref, $qry, $id, $altcov, $covRatio, $chi2Score, $inher, $bestState, $covState);
 			}
