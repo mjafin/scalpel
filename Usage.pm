@@ -37,7 +37,7 @@ my %defaults = (
 	sample		 		=> "ALL",
 	selected 			=> "null",
 	pathlimit 			=> 100000,
-	format				=> "annovar",
+	format				=> "vcf",
 	SVtype				=> "all",
 	version_num			=> "0.1.1(beta)",
 );

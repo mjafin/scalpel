@@ -145,7 +145,7 @@ sub printParams {
 
 	my $file = $_[0];
 	
-	print STDERR "-- Print paramters to $file\n";
+	print STDERR "-- Print parameters to $file\n";
 	
 	open PFILE, "> $file" or die "Can't open $file ($!)\n";
 	
