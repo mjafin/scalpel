@@ -851,7 +851,7 @@ sub extractVariantsFromPath {
 		my @var = split /\s+/, $info;
 					
 		foreach my $v (@var) { ## for each variant
-			my ($pos, $ref, $qry, $avgcov, $mincov, $prevbp) = split /[:|]/, $v;
+			my ($pos, $ref, $qry, $avgcov, $mincov, $prevbpref, $prevbpalt) = split /[:|]/, $v;
 			
 			my $t = "";
 			my $l = 0;
@@ -868,7 +868,8 @@ sub extractVariantsFromPath {
 			$mut->{len}  = $l;
 			$mut->{ref}  = $ref;
 			$mut->{seq}  = $qry;
-			$mut->{prevbp} = $prevbp;
+			$mut->{prevbpref} = $prevbpref;
+			$mut->{prevbpalt} = $prevbpalt;
 			$mut->{avgcov} = $avgcov;
 			$mut->{mincov} = $mincov;
 			$mut->{status} = $exonsta;

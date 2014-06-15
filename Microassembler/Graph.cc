@@ -737,7 +737,7 @@ void Graph_t::dfs(Node_t * source, Node_t * sink, Ori_t dir,
 						pathpos++; 
 					}
 
-					// pathpos is a 1-based coordinate, need to subtruc 1 to correctly search 
+					// pathpos is a 1-based coordinate, need to substruc 1 to correctly search 
 					// into the sequence path which is indexed using 0-based coordinates
 					spanner = path->pathcontig(pathpos);
 					spanner->setRead2InfoList(&readid2info);
@@ -775,6 +775,16 @@ void Graph_t::dfs(Node_t * source, Node_t * sink, Ori_t dir,
 						//       << transcript[ts-1].ref << " "
 						//       << transcript[ts-1].qry << endl;
 						//}
+						
+						// compute previous base to the event for both reference and alternative sequences
+						// [required for VCF output format]
+						int pr=i-1; // referecne index
+						assert(pr >= 0);
+						int pa=i-1; // alternative index
+						assert(pa >= 0);
+						while( (ref_aln[pr] != 'A') && (ref_aln[pr] != 'C') && (ref_aln[pr]) != 'G' && (ref_aln[pr] != 'T') ) { pr--; }
+						while( (path_aln[pa] != 'A') && (path_aln[pa] != 'C') && (path_aln[pa] != 'G') && (path_aln[pa] != 'T') ) { pa--; }
+						
 
 						if (((code == '^') && (ts > 0) && (transcript[ts-1].code == code) && (transcript[ts-1].pos == rrpos)) ||
 							((code == 'v') && (ts > 0) && (transcript[ts-1].code == code) && ((transcript[ts-1].pos + transcript[ts-1].ref.length()) == rrpos)))
@@ -791,7 +801,7 @@ void Graph_t::dfs(Node_t * source, Node_t * sink, Ori_t dir,
 						else
 						{
 							//transcript.push_back(Transcript_t(rrpos, code, ref_aln[i], path_aln[i], spanner->cov_m));
-							transcript.push_back(Transcript_t(rrpos, code, ref_aln[i], path_aln[i], cov_at_pos, ref_aln[i-1]));
+							transcript.push_back(Transcript_t(rrpos, code, ref_aln[i], path_aln[i], cov_at_pos, ref_aln[pr], path_aln[pa]));
 							//min_cov = 1000000;
 						}
 					}
@@ -807,7 +817,7 @@ void Graph_t::dfs(Node_t * source, Node_t * sink, Ori_t dir,
 				for (unsigned int ti = 0; ti < transcript.size(); ti++)
 				{
 					//cerr << " " << transcript[ti].pos << ":" << transcript[ti].ref << "|" << transcript[ti].qry << "|" << transcript[ti].cov;
-					cerr << " " << transcript[ti].pos << ":" << transcript[ti].ref << "|" << transcript[ti].qry << "|" << transcript[ti].getAvgCov() << "|" << transcript[ti].getMinCov() << "|" << transcript[ti].prev_bp;
+					cerr << " " << transcript[ti].pos << ":" << transcript[ti].ref << "|" << transcript[ti].qry << "|" << transcript[ti].getAvgCov() << "|" << transcript[ti].getMinCov() << "|" << transcript[ti].prev_bp_ref << "|" << transcript[ti].prev_bp_alt;
 				}
 
 				cerr << endl;

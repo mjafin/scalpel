@@ -195,7 +195,8 @@ sub printVariants {
 		my $l = $mut->{len};
 		my $ref = $mut->{ref};
 		my $qry = $mut->{seq}; 
-		my $prevbp = $mut->{prevbp}; 
+		my $prevbpref = $mut->{prevbpref}; 
+		my $prevbpalt = $mut->{prevbpalt}; 
 		my $avgcov = $mut->{avgcov}; 
 		my $mincov = $mut->{mincov}; 
 		my $sta = $mut->{status};
@@ -245,8 +246,8 @@ sub printVariants {
 		
 		my $annovar_ref = $ref;
 		my $annovar_qry = $qry;
-		my $vcf_ref = $prevbp . $ref;
-		my $vcf_qry = $prevbp . $qry;
+		my $vcf_ref = $prevbpref . $ref;
+		my $vcf_qry = $prevbpalt . $qry;
 		
 		if($sta eq "ok") { ## only report clean indels...
 			
@@ -266,12 +267,12 @@ sub printVariants {
 			if($t eq "ins") { 
 				$num_ins++; 
 				$annovar_ref = "-";
-				$vcf_ref = $prevbp;
+				$vcf_ref = $prevbpref;
 			}
 			if($t eq "del") { 
 				$num_del++; 
 				$annovar_qry = "-";
-				$vcf_qry = $prevbp;
+				$vcf_qry = $prevbpalt;
 			}
 			
 			my $start = $pos;
