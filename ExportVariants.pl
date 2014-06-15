@@ -157,7 +157,7 @@ sub printVariants {
 				
 		print "##INFO=<ID=AVGCOV,Number=1,Type=Float,Description=\"average k-mer coverage\">\n";
 		print "##INFO=<ID=MINCOV,Number=1,Type=Integer,Description=\"minimum k-mer coverage of non-reference allele\">\n";
-		print "##INFO=<ID=ALTCOV,Number=1,Type=Integer,Description=\"k-mer coverage of reference allele\">\n";
+		print "##INFO=<ID=ALTCOV,Number=1,Type=Integer,Description=\"k-mer coverage of reference + any other allele (different from current non-reference) at locus\">\n";
 		print "##INFO=<ID=ZYG,Number=1,Type=String,Description=\"zygosity\">\n";
 		print "##INFO=<ID=COVRATIO,Number=1,Type=Float,Description=\"coverage ratio [(MINCOV)/(ALTCOV+MINCOV)]\">\n";
 		print "##INFO=<ID=CHI2,Number=1,Type=Float,Description=\"chi-square score\">\n";
@@ -197,7 +197,8 @@ sub printVariants {
 		my $l = $mut->{len};
 		my $ref = $mut->{ref};
 		my $qry = $mut->{seq}; 
-		my $prevbp = $mut->{prevbp}; 
+		my $prevbpref = $mut->{prevbpref}; 
+		my $prevbpalt = $mut->{prevbpalt}; 
 		my $avgcov = $mut->{avgcov}; 
 		my $mincov = $mut->{mincov}; 
 		my $sta = $mut->{status};
@@ -247,8 +248,8 @@ sub printVariants {
 		
 		my $annovar_ref = $ref;
 		my $annovar_qry = $qry;
-		my $vcf_ref = $prevbp . $ref;
-		my $vcf_qry = $prevbp . $qry;
+		my $vcf_ref = $prevbpref . $ref;
+		my $vcf_qry = $prevbpalt . $qry;
 		
 		if($sta eq "ok") { ## only report clean indels...
 			
@@ -268,12 +269,12 @@ sub printVariants {
 			if($t eq "ins") { 
 				$num_ins++; 
 				$annovar_ref = "-";
-				$vcf_ref = $prevbp;
+				$vcf_ref = $prevbpref;
 			}
 			if($t eq "del") { 
 				$num_del++; 
 				$annovar_qry = "-";
-				$vcf_qry = $prevbp;
+				$vcf_qry = $prevbpalt;
 			}
 			
 			my $start = $pos;

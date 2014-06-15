@@ -24,15 +24,17 @@ public:
 	string ref;
 	string qry;
 	vector<int> cov_distr;
-	char prev_bp; // base-pair preceding the mutation
+	char prev_bp_ref; // base-pair preceding the mutation in reference
+	char prev_bp_alt; // base-pair preceding the mutation in alternative
 
-	Transcript_t(int pos_, char code_, char ref_, char qry_, int cov_, char prev_bp_)
+	Transcript_t(int pos_, char code_, char ref_, char qry_, int cov_, char prev_bp_ref_, char prev_bp_alt_)
 		: pos(pos_), code(code_)
 	{ 
 		ref = ref_;
 		qry = qry_;
 		cov_distr.push_back(cov_);
-		prev_bp = prev_bp_;
+		prev_bp_ref = prev_bp_ref_;
+		prev_bp_alt = prev_bp_alt_;
 	}
 	
 	float getAvgCov() {

@@ -187,7 +187,7 @@ sub init()
 				header(); 
 				usageSingle("scalpel --single");   
 			}
-			else{ # run FindDenovos.pl on input parameters
+			else{ # run FindVariants.pl on input parameters
 				header(); # print header
 				my $command = "$findVariants ".
 					"--bam $BAMFILE ".
@@ -384,6 +384,7 @@ sub init()
 				$windowSize = 300;
 				$radius = 150;
 				$covratio = 0.0;
+				$dfs_limit = 1000000;
 			
 				# run validation of candidates
 				my $DIR_val = "$ABS_WORK/validation";
